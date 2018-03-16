@@ -293,7 +293,12 @@ class RandomScale(CoordTransform):
     def set_state(self):
         self.new_sz = self.sz
         if random.random()<self.p:
-            self.new_sz = int(random.uniform(1., self.max_zoom)*self.sz)
+            max_z = self.max_zoom
+            min_z = 1.
+            if isinstance(self.max_zoom, tuple):
+                min_z = self.max_zoom[0]
+                max_z = self.max_zoom[1]
+            self.new_sz = int(random.uniform(min_z, max_z)*self.sz)
 
     def do_transform(self, x, is_y):
         return scale_min(x, self.new_sz, cv2.INTER_NEAREST if is_y else cv2.INTER_AREA)
